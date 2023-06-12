@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hailatdev/django_firebase_auth_docker:latest
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput && exec gunicorn --bind 0.0.0.0:8000 --workers 1 --threads 8 --timeout 0 core.wsgi:application"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/app
+    environment:
+      - SECRET_KEY=EB94C941DCE1455DA48A2CE2F8BEAF50B98704B92B163544AD64DEDEB665C6A2
+      - DEBUG=True
+      - ALLOWED_HOSTS=0.0.0.0,127.0.0.1,localhost
+
+volumes:
+  src:
